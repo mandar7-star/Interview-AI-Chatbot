@@ -4,6 +4,7 @@ A smart interview simulator that mimics real interview scenarios using **multipl
 
 
 
+
 ##  What this project does
 
 This system conducts a full mock interview by:
@@ -12,6 +13,7 @@ This system conducts a full mock interview by:
 - Providing structured, personalized feedback  
 
 It behaves like a **real interviewer + evaluator + career coach combined**.
+
 
 
 
@@ -42,6 +44,7 @@ Instead of a single chatbot, this project uses a **multi-agent architecture** wh
 
 
 
+
 ##  Interview Flow
 
 1. Candidate selects:
@@ -64,6 +67,7 @@ Instead of a single chatbot, this project uses a **multi-agent architecture** wh
 
 
 
+
 ##  Key Highlights
 
 - Multi-agent design (Interviewer + Evaluator + Coach)  
@@ -74,12 +78,14 @@ Instead of a single chatbot, this project uses a **multi-agent architecture** wh
 
 
 
+
 ##  Technical Design
 
 - Local LLM-based system (no external API dependency)  
 - Modular agent architecture  
 - JSON-based structured outputs  
 - Transcript logging for analysis  
+
 
 
 
@@ -96,11 +102,13 @@ Instead of a single chatbot, this project uses a **multi-agent architecture** wh
 
 
 
+
 ##  Use Case
 
 - Data Science / AI interview preparation  
 - Practicing structured answers  
 - Identifying real weaknesses before interviews  
+
 
 
 
@@ -111,6 +119,7 @@ Helps candidates:
 - Think clearly under pressure  
 - Improve answer quality  
 - Get interview-ready with targeted feedback
+
 
 
 
