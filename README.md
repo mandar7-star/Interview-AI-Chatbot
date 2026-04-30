@@ -120,7 +120,7 @@ Helps candidates:
 - Improve answer quality  
 - Get interview-ready with targeted feedback
 
-  ---
+---
 
 ## Interview Transcripts
 
@@ -217,11 +217,6 @@ Gaps: Cannot articulate specific solutions, lacks hands-on experience
 Advice: Build a small React project focusing on useMemo, useCallback, and React.memo
 Verdict: No - needs practical experience
 
- This version fixes your issue because:
-
-Each Turn is clearly separated (### headings)
-Each section ends cleanly before next starts
-No clutter, no confusion — very readable on GitHub
 
 ---
 
@@ -242,7 +237,7 @@ Why: To enable adaptive questioning, the system needs immediate feedback on each
 
 Tradeoff: Adds latency to each turn, but enables intelligent follow-ups and difficulty adjustment.
 
-#### Decision 4: Simple CLI over Web Interface
+### Decision 4: Simple CLI over Web Interface
 Why: The assignment says "simple CLI or notebook is fine." I chose CLI to minimize dependencies and keep focus on the agent architecture.
 
 Tradeoff: Less polished UI, but faster to develop and test.
