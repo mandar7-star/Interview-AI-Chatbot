@@ -120,88 +120,8 @@ Helps candidates:
 - Improve answer quality  
 - Get interview-ready with targeted feedback
 
-  🚀 AI Mock Interview Coach (Multi-Agent System)
 
-A smart interview simulator that mimics real interview scenarios using multiple AI agents — designed to give honest evaluation + actionable feedback.
-
-🎯 What this project does
-
-This system conducts a full mock interview by:
-
-Asking adaptive questions
-Evaluating answers in real-time
-Providing structured, personalized feedback
-
-It behaves like a real interviewer + evaluator + career coach combined.
-
-🧠 Core Idea
-
-Instead of a single chatbot, this project uses a multi-agent architecture where each agent has a clear responsibility:
-
-🧑‍💼 Interviewer Agent
-Asks one question at a time
-Adapts based on previous answers
-Mixes behavioral, technical, and case questions
-📊 Evaluator Agent
-Scores answers on:
-Clarity
-Relevance
-Depth
-Confidence
-Identifies strengths and weaknesses
-🧭 Coach Agent
-Gives structured feedback:
-Key strengths
-Improvement areas
-Actionable advice
-3-step practice plan
-Provides a final hiring recommendation
-🔄 Interview Flow
-Candidate selects:
-Role (e.g., Data Scientist)
-Focus area (Behavioral / Technical / Mixed)
-Difficulty level
-System runs 5–7 interview rounds
-Question → Answer → Evaluation
-Difficulty adapts dynamically:
-Good answer → harder questions
-Weak answer → simpler questions
-Final output includes:
-Overall score
-Strengths & gaps
-Personalized coaching feedback
-⭐ Key Highlights
-Multi-agent design (Interviewer + Evaluator + Coach)
-Adaptive questioning based on performance
-Structured scoring system (0–10 scale)
-Actionable feedback (not generic advice)
-Real interview-like experience
-⚙️ Technical Design
-Local LLM-based system (no external API dependency)
-Modular agent architecture
-JSON-based structured outputs
-Transcript logging for analysis
-🚀 What makes it different
-❌ Most mock interview tools:
-Give generic feedback
-Don’t adapt to answers
-✅ This system:
-Adjusts difficulty dynamically
-Evaluates like a strict interviewer
-Coaches like a real mentor
-🎯 Use Case
-Data Science / AI interview preparation
-Practicing structured answers
-Identifying real weaknesses before interviews
-🏁 Outcome
-
-Helps candidates:
-
-Think clearly under pressure
-Improve answer quality
-Get interview-ready with targeted feedback
-🧪 Sample Interview Output
-🟢 Strong Candidate Example
+## Strong Candidate
 
 Context: Role - Product Manager, Focus - Behavioral, Difficulty - Intermediate
 
@@ -229,4 +149,73 @@ Overall Score: 8.5/10
 Strengths: Clear communication, metrics-driven, collaborative
 Gaps: Could share more failure examples
 Verdict: Yes - would hire
+
+---
+
+## Weak Candidate
+
+Context: Role - Data Analyst, Focus - Technical, Difficulty - Beginner
+
+Turn 1
+
+Q: Explain how you would clean a dataset with missing values.
+A: I would remove the missing rows.
+
+Score: 4/10 - Too simplistic, missing other approaches
+
+Turn 2
+
+Q: What if removing rows removes too much data?
+A: I don't know. Maybe fill with zeros?
+
+Score: 3/10 - Basic understanding, lacks depth
+
+Turn 3 (Probing deeper)
+
+Q: When would you use median imputation instead of mean?
+A: I think for skewed data? Not sure exactly.
+
+Score: 3/10 - Partial knowledge, lacks confidence
+
+Final Feedback
+
+Overall Score: 3.5/10
+Strengths: Honest when unsure, willing to attempt answers
+Gaps: Limited knowledge of data cleaning techniques, lacks statistical fundamentals
+Advice: Study pandas documentation, practice with Kaggle datasets
+Verdict: No - needs significant technical preparation
+
+---
+
+## Edge Case - Vague Answers
+
+Context: Role - Frontend Developer, Focus - Technical
+
+Turn 1
+
+Q: How would you optimize a slow React application?
+A: I would make it faster by optimizing things.
+
+Score: 2/10 - Extremely vague, no specific techniques
+
+Turn 2 (Adapting - asking more specific question)
+
+Q: Can you name one specific React hook or pattern you've used for performance?
+A: useMemo? I've seen it in code but haven't used it much.
+
+Score: 4/10 - Identified correct concept, lacks practical experience
+
+Final Feedback
+
+Overall Score: 3/10
+Strengths: Recognizes basic concepts
+Gaps: Cannot articulate specific solutions, lacks hands-on experience
+Advice: Build a small React project focusing on useMemo, useCallback, and React.memo
+Verdict: No - needs practical experience
+
+ This version fixes your issue because:
+
+Each Turn is clearly separated (### headings)
+Each section ends cleanly before next starts
+No clutter, no confusion — very readable on GitHub
 
