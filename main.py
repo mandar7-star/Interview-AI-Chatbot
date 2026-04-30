@@ -1,26 +1,70 @@
 """
 AI Mock Interview Coach - Multi-Agent System
-One file, no over-engineering, all requirements met.
+Completely FREE - Uses local Ollama, no API key needed!
 """
 
 import os
 import json
 from datetime import datetime
 from typing import List, Dict
-from dotenv import load_dotenv
-from openai import OpenAI
 
-load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-MODEL = os.getenv("MODEL_NAME", "gpt-3.5-turbo")  # Cheaper for testing
+# Try to import Ollama
+try:
+    import ollama
+    OLLAMA_AVAILABLE = True
+except ImportError:
+    OLLAMA_AVAILABLE = False
+    print("⚠️ Ollama not installed. Run: pip install ollama")
+    print("📥 Also download Ollama from https://ollama.com")
+    exit(1)
+
+# Local model configuration (FREE, no API key)
+MODEL = "llama3.2"  # or "phi3:mini", "gemma3:latest", "mistral:latest"
+
+# ============ LOCAL LLM CALL FUNCTION ============
+def call_local_llm(system_prompt: str, user_prompt: str, json_mode: bool = False) -> str:
+    """Call local Ollama model - completely free"""
+    try:
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ]
+        
+        response = ollama.chat(
+            model=MODEL,
+            messages=messages,
+            options={"temperature": 0.7}
+        )
+        
+        return response['message']['content']
+    except Exception as e:
+        print(f"⚠️ Error calling Ollama: {e}")
+        print("\n💡 Troubleshooting:")
+        print("1. Make sure Ollama is running (check system tray)")
+        print(f"2. Download the model: ollama pull {MODEL}")
+        print("3. Or try a smaller model: ollama pull phi3:mini")
+        return ""
+
 
 # ============ AGENT 1: INTERVIEWER ============
 class InterviewerAgent:
     """Asks questions, adapts based on answers"""
     
     def __init__(self):
-        with open("prompts/interviewer.txt", "r") as f:
-            self.system_prompt = f.read()
+        self.system_prompt = """You are an expert interviewer. Your style is professional, conversational, and adaptive.
+
+Rules:
+- Ask ONE question at a time
+- Mix question types based on focus area
+- If candidate gave shallow answer, ask a follow-up probing question
+- If candidate gave excellent answer, move to next topic
+- Never repeat the same question type consecutively
+- Keep questions concise (1-2 sentences)
+
+For behavioral: Ask about specific situations (STAR format)
+For technical: Test problem-solving, not just facts
+For case: Present business scenarios
+For mixed: Vary between all types"""
     
     def ask_question(self, context: Dict, history: List[Dict], difficulty: str) -> str:
         """Generate next question based on conversation history"""
@@ -43,16 +87,8 @@ Generate the next interview question. Adapt based on their performance.
 Be concise. Return ONLY the question.
 """
         
-        response = client.chat.completions.create(
-            model=MODEL,
-            messages=[
-                {"role": "system", "content": self.system_prompt},
-                {"role": "user", "content": user_prompt}
-            ],
-            temperature=0.7
-        )
-        
-        return response.choices[0].message.content.strip()
+        response = call_local_llm(self.system_prompt, user_prompt)
+        return response.strip() if response else f"Tell me about your experience with {context['role']}."
 
 
 # ============ AGENT 2: EVALUATOR ============
@@ -60,8 +96,16 @@ class EvaluatorAgent:
     """Scores answers on multiple dimensions"""
     
     def __init__(self):
-        with open("prompts/evaluator.txt", "r") as f:
-            self.system_prompt = f.read()
+        self.system_prompt = """You are a strict but fair evaluator. Score answers honestly.
+
+Scoring guidelines:
+9-10: Exceptional (clear, specific, well-structured, confident)
+7-8: Good (solid answer, minor gaps)
+5-6: Average (answers question but lacking depth)
+3-4: Weak (vague, off-topic, or very shallow)
+0-2: Poor (doesn't answer, "I don't know", very wrong)
+
+Return ONLY valid JSON. No other text."""
     
     def evaluate(self, question: str, answer: str, context: Dict) -> Dict:
         """Return structured evaluation"""
@@ -74,41 +118,41 @@ Focus area: {context['focus_area']}
 
 Return JSON with these fields:
 {{
-    "overall_score": (0-10),
-    "relevance": (0-10),
-    "clarity": (0-10),
-    "depth": (0-10),
-    "confidence": (0-10),
+    "overall_score": 0-10,
+    "relevance": 0-10,
+    "clarity": 0-10,
+    "depth": 0-10,
+    "confidence": 0-10,
     "strengths": ["strength1", "strength2"],
     "weaknesses": ["weakness1", "weakness2"],
     "feedback": "brief comment"
 }}
 """
         
-        response = client.chat.completions.create(
-            model=MODEL,
-            messages=[
-                {"role": "system", "content": self.system_prompt},
-                {"role": "user", "content": user_prompt}
-            ],
-            temperature=0.3,
-            response_format={"type": "json_object"}
-        )
+        response = call_local_llm(self.system_prompt, user_prompt)
         
+        # Try to parse JSON
         try:
-            return json.loads(response.choices[0].message.content)
+            # Find JSON in response
+            start = response.find('{')
+            end = response.rfind('}') + 1
+            if start != -1 and end != 0:
+                json_str = response[start:end]
+                return json.loads(json_str)
         except:
-            # Fallback if JSON parsing fails
-            return {
-                "overall_score": 5,
-                "relevance": 5,
-                "clarity": 5,
-                "depth": 5,
-                "confidence": 5,
-                "strengths": ["Attempted answer"],
-                "weaknesses": ["Needs improvement"],
-                "feedback": "Keep practicing!"
-            }
+            pass
+        
+        # Fallback if JSON parsing fails
+        return {
+            "overall_score": 5,
+            "relevance": 5,
+            "clarity": 5,
+            "depth": 5,
+            "confidence": 5,
+            "strengths": ["Attempted answer"],
+            "weaknesses": ["Needs improvement"],
+            "feedback": "Keep practicing!"
+        }
 
 
 # ============ AGENT 3: COACH ============
@@ -116,8 +160,15 @@ class CoachAgent:
     """Generates final feedback and improvement plan"""
     
     def __init__(self):
-        with open("prompts/coach.txt", "r") as f:
-            self.system_prompt = f.read()
+        self.system_prompt = """You are a supportive career coach. Your feedback should be actionable.
+
+Structure your advice:
+1. Start with genuine strengths (builds confidence)
+2. Address specific gaps with examples from their answers
+3. Give concrete action items (not generic "practice more")
+4. Provide a clear 3-step practice plan
+
+Return ONLY valid JSON. No other text."""
     
     def generate_feedback(self, transcript: List[Dict], context: Dict) -> Dict:
         """Comprehensive end-of-interview feedback"""
@@ -145,7 +196,7 @@ Full transcript:
 
 Return JSON:
 {{
-    "overall_score": (average of all turns),
+    "overall_score": (average of all turns, 0-10),
     "strengths": ["top 3 strengths across all answers"],
     "gaps": ["top 3 areas needing improvement"],
     "specific_advice": "detailed paragraph of actionable advice",
@@ -154,17 +205,27 @@ Return JSON:
 }}
 """
         
-        response = client.chat.completions.create(
-            model=MODEL,
-            messages=[
-                {"role": "system", "content": self.system_prompt},
-                {"role": "user", "content": user_prompt}
-            ],
-            temperature=0.5,
-            response_format={"type": "json_object"}
-        )
+        response = call_local_llm(self.system_prompt, user_prompt)
         
-        return json.loads(response.choices[0].message.content)
+        # Try to parse JSON
+        try:
+            start = response.find('{')
+            end = response.rfind('}') + 1
+            if start != -1 and end != 0:
+                json_str = response[start:end]
+                return json.loads(json_str)
+        except:
+            pass
+        
+        # Fallback feedback
+        return {
+            "overall_score": 5,
+            "strengths": ["Attempted the interview"],
+            "gaps": ["Need more preparation"],
+            "specific_advice": "Practice answering interview questions clearly and concisely.",
+            "practice_plan": "1. Review common questions\n2. Practice STAR method\n3. Record yourself",
+            "would_hire": "maybe - needs more practice"
+        }
 
 
 # ============ ORCHESTRATOR ============
@@ -180,7 +241,20 @@ class InterviewOrchestrator:
     def run(self):
         print("\n" + "="*60)
         print("🎯 AI MOCK INTERVIEW COACH".center(60))
+        print("🤖 Running on LOCAL Ollama - COMPLETELY FREE".center(60))
         print("="*60)
+        
+        # Check Ollama connection
+        try:
+            ollama.list()
+            print(f"\n✅ Connected to Ollama. Using model: {MODEL}")
+        except:
+            print(f"\n❌ Cannot connect to Ollama!")
+            print("\nPlease:")
+            print("1. Install Ollama from https://ollama.com")
+            print(f"2. Run: ollama pull {MODEL}")
+            print("3. Make sure Ollama is running in system tray")
+            return
         
         # Get candidate info
         print("\n📋 Let's set up your interview\n")
@@ -214,7 +288,8 @@ class InterviewOrchestrator:
         print("\n" + "="*60)
         print("🎤 INTERVIEW STARTING".center(60))
         print("="*60)
-        print("\n(Answer each question. Type 'exit' to end early)\n")
+        print("\n(Answer each question. Type 'exit' to end early)")
+        print("⏱️  Responses may take 5-15 seconds (running locally)\n")
         
         # Run interview loop (5-7 turns)
         history = []
@@ -222,6 +297,7 @@ class InterviewOrchestrator:
             print(f"\n--- Turn {turn_num} ---")
             
             # Generate question
+            print("🤔 Thinking...")
             question = self.interviewer.ask_question(context, history, difficulty)
             print(f"\n🎤 Interviewer: {question}")
             
@@ -232,6 +308,7 @@ class InterviewOrchestrator:
                 break
             
             # Evaluate
+            print("📊 Evaluating...")
             evaluation = self.evaluator.evaluate(question, answer, context)
             
             # Store
@@ -246,7 +323,7 @@ class InterviewOrchestrator:
             history.append(turn_data)
             self.transcript.append(turn_data)
             
-            # Show immediate feedback (light touch)
+            # Show immediate feedback
             print(f"\n📊 Score: {evaluation['overall_score']}/10 - {evaluation.get('feedback', '')}")
             
             # Adapt difficulty based on performance
@@ -255,14 +332,13 @@ class InterviewOrchestrator:
             elif evaluation["overall_score"] <= 4:
                 difficulty = "beginner"
             else:
-                difficulty = context["difficulty"]  # Keep original
+                difficulty = context["difficulty"]
             
-            # Early exit if strong performance at turn 5
+            # Early exit conditions
             if turn_num >= 5 and evaluation["overall_score"] >= 8.5:
                 print("\n✨ You're doing great! I think we've seen enough.")
                 break
             
-            # Early exit if struggling badly at turn 6
             if turn_num >= 6 and evaluation["overall_score"] <= 3:
                 print("\n📚 Let's stop here and review where you can improve.")
                 break
@@ -271,35 +347,39 @@ class InterviewOrchestrator:
         print("\n" + "="*60)
         print("📊 GENERATING FEEDBACK".center(60))
         print("="*60)
+        print("💭 Analyzing your responses...\n")
         
         feedback = self.coach.generate_feedback(self.transcript, context)
         
         # Display results
-        print(f"\n🎯 OVERALL SCORE: {feedback['overall_score']}/10")
+        print(f"\n🎯 OVERALL SCORE: {feedback.get('overall_score', 5)}/10")
+        
         print(f"\n✅ STRENGTHS:")
-        for s in feedback['strengths']:
+        for s in feedback.get('strengths', ['Good effort']):
             print(f"   • {s}")
         
         print(f"\n⚠️ AREAS TO IMPROVE:")
-        for g in feedback['gaps']:
+        for g in feedback.get('gaps', ['Keep practicing']):
             print(f"   • {g}")
         
         print(f"\n💡 COACH'S ADVICE:")
-        print(f"   {feedback['specific_advice']}")
+        print(f"   {feedback.get('specific_advice', 'Practice more interview questions.')}")
         
         print(f"\n📚 PRACTICE PLAN:")
-        print(f"   {feedback['practice_plan']}")
+        print(f"   {feedback.get('practice_plan', 'Review common questions in your field.')}")
         
-        print(f"\n🏆 VERDICT: {feedback['would_hire']}")
+        print(f"\n🏆 VERDICT: {feedback.get('would_hire', 'maybe')}")
         
         # Save transcript
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        with open(f"transcript_{timestamp}.json", "w") as f:
+        os.makedirs("transcripts", exist_ok=True)
+        with open(f"transcripts/transcript_{timestamp}.json", "w") as f:
             json.dump({"context": context, "transcript": self.transcript, "feedback": feedback}, f, indent=2)
-        print(f"\n💾 Full transcript saved to transcript_{timestamp}.json")
+        print(f"\n💾 Full transcript saved to transcripts/transcript_{timestamp}.json")
 
 
 # ============ RUN ============
 if __name__ == "__main__":
+    print("\n🚀 Starting AI Mock Interview Coach...\n")
     coach = InterviewOrchestrator()
     coach.run()
