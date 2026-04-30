@@ -14,8 +14,8 @@ try:
     OLLAMA_AVAILABLE = True
 except ImportError:
     OLLAMA_AVAILABLE = False
-    print("⚠️ Ollama not installed. Run: pip install ollama")
-    print("📥 Also download Ollama from https://ollama.com")
+    print(" Ollama not installed. Run: pip install ollama")
+    print(" Also download Ollama from https://ollama.com")
     exit(1)
 
 # Local model configuration (FREE, no API key)
@@ -38,8 +38,8 @@ def call_local_llm(system_prompt: str, user_prompt: str, json_mode: bool = False
         
         return response['message']['content']
     except Exception as e:
-        print(f"⚠️ Error calling Ollama: {e}")
-        print("\n💡 Troubleshooting:")
+        print(f"Error calling Ollama: {e}")
+        print("\nTroubleshooting:")
         print("1. Make sure Ollama is running (check system tray)")
         print(f"2. Download the model: ollama pull {MODEL}")
         print("3. Or try a smaller model: ollama pull phi3:mini")
@@ -240,16 +240,16 @@ class InterviewOrchestrator:
     
     def run(self):
         print("\n" + "="*60)
-        print("🎯 AI MOCK INTERVIEW COACH".center(60))
-        print("🤖 Running on LOCAL Ollama - COMPLETELY FREE".center(60))
+        print("AI MOCK INTERVIEW COACH".center(60))
+        print("Running on LOCAL Ollama - COMPLETELY FREE".center(60))
         print("="*60)
         
         # Check Ollama connection
         try:
             ollama.list()
-            print(f"\n✅ Connected to Ollama. Using model: {MODEL}")
+            print(f"\n Connected to Ollama. Using model: {MODEL}")
         except:
-            print(f"\n❌ Cannot connect to Ollama!")
+            print(f"\nCannot connect to Ollama!")
             print("\nPlease:")
             print("1. Install Ollama from https://ollama.com")
             print(f"2. Run: ollama pull {MODEL}")
@@ -257,7 +257,7 @@ class InterviewOrchestrator:
             return
         
         # Get candidate info
-        print("\n📋 Let's set up your interview\n")
+        print("\n Let's set up your interview\n")
         role = input("Target role (e.g., Product Manager, Data Analyst): ").strip()
         background = input("Brief background (2-3 lines, optional): ").strip()
         
@@ -286,10 +286,10 @@ class InterviewOrchestrator:
         }
         
         print("\n" + "="*60)
-        print("🎤 INTERVIEW STARTING".center(60))
+        print(" INTERVIEW STARTING".center(60))
         print("="*60)
         print("\n(Answer each question. Type 'exit' to end early)")
-        print("⏱️  Responses may take 5-15 seconds (running locally)\n")
+        print("  Responses may take 5-15 seconds (running locally)\n")
         
         # Run interview loop (5-7 turns)
         history = []
@@ -297,18 +297,18 @@ class InterviewOrchestrator:
             print(f"\n--- Turn {turn_num} ---")
             
             # Generate question
-            print("🤔 Thinking...")
+            print(" Thinking...")
             question = self.interviewer.ask_question(context, history, difficulty)
-            print(f"\n🎤 Interviewer: {question}")
+            print(f"\n Interviewer: {question}")
             
             # Get answer
             answer = input("\n👤 You: ").strip()
             if answer.lower() == 'exit':
-                print("\n⚠️ Interview ended early.")
+                print("\n Interview ended early.")
                 break
             
             # Evaluate
-            print("📊 Evaluating...")
+            print(" Evaluating...")
             evaluation = self.evaluator.evaluate(question, answer, context)
             
             # Store
@@ -324,7 +324,7 @@ class InterviewOrchestrator:
             self.transcript.append(turn_data)
             
             # Show immediate feedback
-            print(f"\n📊 Score: {evaluation['overall_score']}/10 - {evaluation.get('feedback', '')}")
+            print(f"\n Score: {evaluation['overall_score']}/10 - {evaluation.get('feedback', '')}")
             
             # Adapt difficulty based on performance
             if evaluation["overall_score"] >= 8:
@@ -336,50 +336,50 @@ class InterviewOrchestrator:
             
             # Early exit conditions
             if turn_num >= 5 and evaluation["overall_score"] >= 8.5:
-                print("\n✨ You're doing great! I think we've seen enough.")
+                print("\n You're doing great! I think we've seen enough.")
                 break
             
             if turn_num >= 6 and evaluation["overall_score"] <= 3:
-                print("\n📚 Let's stop here and review where you can improve.")
+                print("\n Let's stop here and review where you can improve.")
                 break
         
         # Generate final coaching
         print("\n" + "="*60)
-        print("📊 GENERATING FEEDBACK".center(60))
+        print(" GENERATING FEEDBACK".center(60))
         print("="*60)
-        print("💭 Analyzing your responses...\n")
+        print(" Analyzing your responses...\n")
         
         feedback = self.coach.generate_feedback(self.transcript, context)
         
         # Display results
-        print(f"\n🎯 OVERALL SCORE: {feedback.get('overall_score', 5)}/10")
+        print(f"\n OVERALL SCORE: {feedback.get('overall_score', 5)}/10")
         
-        print(f"\n✅ STRENGTHS:")
+        print(f"\nSTRENGTHS:")
         for s in feedback.get('strengths', ['Good effort']):
             print(f"   • {s}")
         
-        print(f"\n⚠️ AREAS TO IMPROVE:")
+        print(f"\n AREAS TO IMPROVE:")
         for g in feedback.get('gaps', ['Keep practicing']):
             print(f"   • {g}")
         
-        print(f"\n💡 COACH'S ADVICE:")
+        print(f"\n COACH'S ADVICE:")
         print(f"   {feedback.get('specific_advice', 'Practice more interview questions.')}")
         
-        print(f"\n📚 PRACTICE PLAN:")
+        print(f"\n PRACTICE PLAN:")
         print(f"   {feedback.get('practice_plan', 'Review common questions in your field.')}")
         
-        print(f"\n🏆 VERDICT: {feedback.get('would_hire', 'maybe')}")
+        print(f"\n VERDICT: {feedback.get('would_hire', 'maybe')}")
         
         # Save transcript
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         os.makedirs("transcripts", exist_ok=True)
         with open(f"transcripts/transcript_{timestamp}.json", "w") as f:
             json.dump({"context": context, "transcript": self.transcript, "feedback": feedback}, f, indent=2)
-        print(f"\n💾 Full transcript saved to transcripts/transcript_{timestamp}.json")
+        print(f"\n Full transcript saved to transcripts/transcript_{timestamp}.json")
 
 
 # ============ RUN ============
 if __name__ == "__main__":
-    print("\n🚀 Starting AI Mock Interview Coach...\n")
+    print("\n Starting AI Mock Interview Coach...\n")
     coach = InterviewOrchestrator()
     coach.run()
