@@ -1,126 +1,87 @@
+🟢 STRONG CANDIDATE
 
-##  AI Interview Evaluation Examples
+Context: Role - Product Manager, Focus - Behavioral, Difficulty - Intermediate
 
----
+TURN 1
 
-## ** Strong Candidate**
+Q: Tell me about a time you had to convince a team to adopt your idea.
+A: At my previous company, I noticed our user onboarding had 40% drop-off. I proposed a redesign but engineering pushed back due to other priorities. I built a quick prototype, showed data from user sessions, and got buy-in from our VP. The redesign increased retention by 25%.
 
-**Context:** Role - Product Manager, Focus - Behavioral, Difficulty - Intermediate
+Score: 9/10 - Excellent STAR format, specific metrics, clear impact
 
----
+TURN 2
 
-### **Turn 1**
+Q: How did you handle the engineering team's initial resistance?
+A: I scheduled one-on-ones with the lead engineer to understand their concerns. They were worried about timeline. I offered to reduce scope for v1 and handle user testing myself. We shipped in 3 weeks instead of 2 months.
 
-**Q:** Tell me about a time you had to convince a team to adopt your idea.
-**A:** At my previous company, I noticed our user onboarding had 40% drop-off. I proposed a redesign but engineering pushed back due to other priorities. I built a quick prototype, showed data from user sessions, and got buy-in from our VP. The redesign increased retention by 25%.
+Score: 8/10 - Good collaboration example, shows empathy
 
-**Score:** **9/10** - Excellent STAR format, specific metrics, clear impact
+INTERVIEW NOTE
 
----
+[Interview ends early at Turn 5 due to strong performance]
 
-### **Turn 2**
+FINAL FEEDBACK
 
-**Q:** How did you handle the engineering team's initial resistance?
-**A:** I scheduled one-on-ones with the lead engineer to understand their concerns. They were worried about timeline. I offered to reduce scope for v1 and handle user testing myself. We shipped in 3 weeks instead of 2 months.
+Overall Score: 8.5/10
+Strengths: Clear communication, metrics-driven, collaborative
+Gaps: Could share more failure examples
+Verdict: Yes - would hire
 
-**Score:** **8/10** - Good collaboration example, shows empathy
+🔴 WEAK CANDIDATE
 
----
+Context: Role - Data Analyst, Focus - Technical, Difficulty - Beginner
 
-### **Interview Note**
+TURN 1
 
-**[Interview ends early at Turn 5 due to strong performance]**
+Q: Explain how you would clean a dataset with missing values.
+A: I would remove the missing rows.
 
----
+Score: 4/10 - Too simplistic, missing other approaches
 
-### **Final Feedback**
+TURN 2
 
-**Overall Score:** **8.5/10**
-**Strengths:** Clear communication, metrics-driven, collaborative
-**Gaps:** Could share more failure examples
-**Verdict:** **Yes - would hire**
+Q: What if removing rows removes too much data?
+A: I don't know. Maybe fill with zeros?
 
----
+Score: 3/10 - Basic understanding, lacks depth
 
----
+TURN 3 (PROBING DEEPER)
 
-## ** Weak Candidate**
+Q: When would you use median imputation instead of mean?
+A: I think for skewed data? Not sure exactly.
 
-**Context:** Role - Data Analyst, Focus - Technical, Difficulty - Beginner
+Score: 3/10 - Partial knowledge, lacks confidence
 
----
+FINAL FEEDBACK
 
-### **Turn 1**
+Overall Score: 3.5/10
+Strengths: Honest when unsure, willing to attempt answers
+Gaps: Limited knowledge of data cleaning techniques, lacks statistical fundamentals
+Advice: Study pandas documentation, practice with Kaggle datasets
+Verdict: No - needs significant technical preparation
 
-**Q:** Explain how you would clean a dataset with missing values.
-**A:** I would remove the missing rows.
+🟡 EDGE CASE - VAGUE ANSWERS
 
-**Score:** **4/10** - Too simplistic, missing other approaches
+Context: Role - Frontend Developer, Focus - Technical
 
----
+TURN 1
 
-### **Turn 2**
+Q: How would you optimize a slow React application?
+A: I would make it faster by optimizing things.
 
-**Q:** What if removing rows removes too much data?
-**A:** I don't know. Maybe fill with zeros?
+Score: 2/10 - Extremely vague, no specific techniques
 
-**Score:** **3/10** - Basic understanding, lacks depth
+TURN 2 (ADAPTING - ASKING MORE SPECIFIC QUESTION)
 
----
+Q: Can you name one specific React hook or pattern you've used for performance?
+A: useMemo? I've seen it in code but haven't used it much.
 
-### **Turn 3 (Probing deeper)**
+Score: 4/10 - Identified correct concept, lacks practical experience
 
-**Q:** When would you use median imputation instead of mean?
-**A:** I think for skewed data? Not sure exactly.
+FINAL FEEDBACK
 
-**Score:** **3/10** - Partial knowledge, lacks confidence
-
----
-
-### **Final Feedback**
-
-**Overall Score:** **3.5/10**
-**Strengths:** Honest when unsure, willing to attempt answers
-**Gaps:** Limited knowledge of data cleaning techniques, lacks statistical fundamentals
-**Advice:** Study pandas documentation, practice with Kaggle datasets
-**Verdict:** **No - needs significant technical preparation**
-
----
-
----
-
-## ** Edge Case - Vague Answers**
-
-**Context:** Role - Frontend Developer, Focus - Technical
-
----
-
-### **Turn 1**
-
-**Q:** How would you optimize a slow React application?
-**A:** I would make it faster by optimizing things.
-
-**Score:** **2/10** - Extremely vague, no specific techniques
-
----
-
-### **Turn 2 (Adapting - asking more specific question)**
-
-**Q:** Can you name one specific React hook or pattern you've used for performance?
-**A:** useMemo? I've seen it in code but haven't used it much.
-
-**Score:** **4/10** - Identified correct concept, lacks practical experience
-
----
-
-### **Final Feedback**
-
-**Overall Score:** **3/10**
-**Strengths:** Recognizes basic concepts
-**Gaps:** Cannot articulate specific solutions, lacks hands-on experience
-**Advice:** Build a small React project focusing on useMemo, useCallback, and React.memo
-**Verdict:** **No - needs practical experience**
-
-
-
-
+Overall Score: 3/10
+Strengths: Recognizes basic concepts
+Gaps: Cannot articulate specific solutions, lacks hands-on experience
+Advice: Build a small React project focusing on useMemo, useCallback, and React.memo
+Verdict: No - needs practical experience
